@@ -1,0 +1,8 @@
+vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords ) {
+    vec4 pixel = Texel(texture, texture_coords);
+    return vec4(1.0 - (1.0-pixel.rgb) * (1.0-color.rgb), pixel.a*color.a);
+}
+
+vec4 position( mat4 transform_projection, vec4 vertex_position ) {
+    return transform_projection * vertex_position;
+}
