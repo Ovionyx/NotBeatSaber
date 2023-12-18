@@ -326,7 +326,7 @@ function love.update(dt)
         for i = 0, bufferSize-1 do
             for c = 1, CurrentSong:getChannelCount() do
                 buffer:setSample(i, c,
-                    i + samplesRead < 0 and 0 or CurrentSong:getSample(math.max(i + samplesRead, CurrentSong:getSampleCount()), c)
+                    i + samplesRead < 0 and 0 or CurrentSong:getSample(math.min(i + samplesRead, CurrentSong:getSampleCount()-1), c)
                 )
             end
         end
