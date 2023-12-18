@@ -21,6 +21,7 @@ end
 local mouseTrail = {}
 local vec2 = require("lib.vector2")
 local socket = require("socket")
+local loveframes = require("lib.loveframes")
 
 local unit = 0
 
@@ -156,7 +157,7 @@ local objectMeta = {
             local dtExp = (1 - (1 + dt) ^ opt.indExp) * opt.indDist
 
             local objPos = vec2(love.graphics.getDimensions()) / 2 +
-                vec2(self.x - 5, self.y - 5) * getUnit() / (1 - dt * 0.75 * opt.indDur) +
+                vec2(self.x - 5, self.y - 5) * getUnit() / (dtExp * 0.75 * opt.indDur) +
                 vec2((self.ox * math.cos(rot) - self.oy * math.sin(rot)) * unit,
                      (self.ox * math.sin(rot) + self.oy * math.cos(rot)) * unit)
 
@@ -180,10 +181,17 @@ local objectMeta = {
         update = function (self, time, first)
             local dt = (time - self.time * activeChart.bt)
             if dt > 0.2 then
-                energy = math.max(energy - 10, 0)
-                assets.sounds.miss:seek(0)
-                assets.sounds.miss:play()
-                streak = 0
+                if self.badhit then
+                    energy = math.max(energy - 5, 0)
+                    assets.sounds.badhit:seek(0)
+                    assets.sounds.badhit:play()
+                    streak = 0
+                else
+                    energy = math.max(energy - 10, 0)
+                    assets.sounds.miss:seek(0)
+                    assets.sounds.miss:play()
+                    streak = 0
+                end
                 return true
             end
 
@@ -211,11 +219,7 @@ local objectMeta = {
                         streak = streak + 1
                         return true
                     end
-                    energy = math.max(energy - 5, 0)
-                    assets.sounds.badhit:seek(0)
-                    assets.sounds.badhit:play()
-                    streak = 0
-                    return true
+                    self.badhit = true
                 end
             end
         end
@@ -427,3 +431,10 @@ function love.draw()
     local e = mouseVel / 10 + s
     love.graphics.line(s.x, s.y, e.x, e.y)]]
 end
+
+--[[
+    abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ
+    0123456789-=!@#$%^&*()_+
+    {}[]|\/:;"',.?<>~` 
+]]
