@@ -21,7 +21,6 @@ end
 local mouseTrail = {}
 local vec2 = require("lib.vector2")
 local socket = require("socket")
-local loveframes = require("lib.loveframes")
 
 local unit = 0
 
