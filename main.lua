@@ -34,19 +34,13 @@ local songSource
 local activeChart
 local samplesRead = 0
 
-local bufferSize = 128
+local bufferSize
 local buffer
 
 CurrentSong = nil
 
-local opt = {
-    indDist = 2,
-    indExp = 4,
-    indDur = 1,
-    startBeat = 32,
-    pitch = 1,
-    auto = true
-}
+local opt = require("options")
+bufferSize = opt.bufferSize
 
 local scoreTexts = {}
 
@@ -298,7 +292,7 @@ end
 
 play("test")
 logTable(activeChart.objects[1])
-love.window.setMode(800, 600, {vsync = true, resizable = true, msaa = 8})
+love.window.setMode(800, 600, {vsync = opt.vsync, resizable = not opt.fullscreen, fullscreen = opt.fullscreen})
 
 function love.load()
     assets.sprites = {
