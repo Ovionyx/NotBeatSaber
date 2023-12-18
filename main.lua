@@ -154,9 +154,10 @@ local objectMeta = {
             local center = imageScale / 2
 
             local dtExp = (1 - (1 + dt) ^ opt.indExp) * opt.indDist
+            local invDtExp = (1 - (dt) ^ opt.indExp)
 
             local objPos = vec2(love.graphics.getDimensions()) / 2 +
-                vec2(self.x - 5, self.y - 5) * getUnit() / (dtExp * 0.75 * opt.indDur) +
+                vec2(self.x - 5, self.y - 5) * getUnit() * (invDtExp * opt.indDur) +
                 vec2((self.ox * math.cos(rot) - self.oy * math.sin(rot)) * unit,
                      (self.ox * math.sin(rot) + self.oy * math.cos(rot)) * unit)
 
@@ -200,7 +201,8 @@ local objectMeta = {
                     self.x + self.ox * math.cos(rot) - self.oy * math.sin(rot), 
                     self.y + self.ox * math.sin(rot) + self.oy * math.cos(rot)
                 )
-                if (mouseTrail[1] - pos):length() < unit / 2 or opt.auto and dt > 0 then
+                local dif = mouseTrail[1] - pos
+                if (dif):lengthSquared() + dif:dot(self.dir)^2 < unit ^ 2 or opt.auto and dt > 0 then
                     local foreVec = vec2(math.cos(rot), math.sin(rot))
                     local normVel = mouseVel:normalize()
                     local dot = foreVec.x * normVel.x + foreVec.y * normVel.y
