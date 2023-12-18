@@ -8,5 +8,5 @@ return {
     vsync = true,
     fullscreen = false,
     bufferSize = 128, --Number of samples to read into the audio queue at a time. Increase this to fix audio stuttering, decrease to fix video stuttering
-    
+    chartName = "test" --Name of the chart to load
 }

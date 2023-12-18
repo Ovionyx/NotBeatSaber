@@ -290,7 +290,7 @@ for i, dir in ipairs(love.filesystem.getDirectoryItems("charts")) do
     charts[dir] = loadChart(dir)
 end
 
-play("test")
+play(opt.chartName)
 logTable(activeChart.objects[1])
 love.window.setMode(800, 600, {vsync = opt.vsync, resizable = not opt.fullscreen, fullscreen = opt.fullscreen})
 
