@@ -2,7 +2,7 @@ return {
     indDist = 2, --Distance to display indicator arrows
     indExp = 4, --Exponent controlling the movement of the indicator arrow
     indDur = 1, --How long to show indicators for
-    startBeat = 32, --How many beats into the song to start
+    startBeat = 36, --How many beats into the song to start
     pitch = 1, --Speed and pitch of the song
     auto = true, --Auto play
     vsync = true,
