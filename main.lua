@@ -1,3 +1,5 @@
+if arg[#arg] == "vsc_debug" then require("lldebugger").start() end
+
 function serializeTable(t, indent)
     indent = indent or 1
     if type(t) == "table" then
@@ -343,7 +345,7 @@ function love.update(dt)
     end
 
     if energy == 0 or #activeChart.objects == 0 then
-        play("test")
+        play(opt.chartName)
     end
 
     local nextTexts = {}
@@ -398,7 +400,6 @@ function love.draw()
 
     love.graphics.setShader()
 
-    print(hsv2rgb(time, 1, 1))
     love.graphics.setColor(hsv2rgb(time*60, 1, 1))
 
     love.graphics.setLineWidth(1)
