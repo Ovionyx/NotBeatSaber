@@ -243,9 +243,16 @@ local function loadChart(dir)
             chart.bt = 60/chart.bpm
         elseif #values > 1 then
             local object = objectMeta[values[2]].constructor(unpack(values))
-            timeAcc = timeAcc + values[1]
+            local delay = values[1]
+            local slashPos = string.find(delay, "/")
+            if slashPos then
+                delay = tonumber(delay:sub(1, slashPos-1)) / tonumber(delay:sub(slashPos+1))
+            else
+                delay = tonumber(delay)
+            end
+            timeAcc = timeAcc + delay
             object.time = timeAcc
-            object.delay = values[1]
+            object.delay = delay
             object.type = values[2]
             object.render = objectMeta[values[2]].render
             object.update = objectMeta[values[2]].update
