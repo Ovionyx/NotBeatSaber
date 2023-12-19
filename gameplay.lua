@@ -1,8 +1,8 @@
 if arg[#arg] == "vsc_debug" then require("lldebugger").start() end
 
-local function serializeTable(t, indent)
+function serializeTable(t, indent)
     indent = indent or 1
-    if type(t) == "table" then
+    if type(t) == "table" and indent <= 1 then
         local str = tostring(t) .. " {\n"
         for k, v in pairs(t) do
             str = str .. string.rep("    ", indent) .. "[" .. k .. "] = " .. serializeTable(v, indent + 1) .. ",\n"
@@ -14,7 +14,7 @@ local function serializeTable(t, indent)
     end
 end
 
-local function logTable(t)
+function logTable(t)
     print(serializeTable(t))
 end
 
@@ -25,7 +25,7 @@ local loveframes = require("lib.loveframes")
 
 local unit = 0
 
-local charts = {}
+charts = {}
 local assets = {}
 
 local energy = 50
@@ -41,6 +41,8 @@ local samplesRead = 0
 
 local bufferSize
 local buffer
+
+local timesPlayed = 0
 
 CurrentSong = nil
 
@@ -307,6 +309,7 @@ local function loadChart(dir)
         end
     end
 
+    chart.duration = timeAcc * chart.bt
     chart.meta = require("charts."..dir..".meta")
 
     return chart
@@ -316,6 +319,7 @@ end
 
 local callbacks = {
     update = function(dt)
+        songSource:play() --here
         while songSource:getFreeBufferCount() > 0 do
             for i = 0, bufferSize - 1 do
                 for c = 1, CurrentSong:getChannelCount() do
@@ -328,8 +332,9 @@ local callbacks = {
             end
             samplesRead = samplesRead + bufferSize * playbackSpeed
             songSource:queue(buffer)
-            songSource:play()
+            songSource:play() --here
         end
+        songSource:play() --here
 
         if energy == 0 then
             playbackSpeed = math.max(0, playbackSpeed - dt*0.2)
@@ -352,6 +357,15 @@ local callbacks = {
 
         if energy == 0 then
             deathTimer = deathTimer + dt
+        end
+
+        if time > activeChart.duration then
+            songSource:setVolume(1 - (time - activeChart.duration) / 3)
+        end
+
+        if deathTimer > 5 or time - activeChart.duration > 3 then
+            songSource:pause()
+            chartSelect()
         end
 
         local nextTexts = {}
@@ -472,19 +486,23 @@ local callbacks = {
 }
 
 local function play(chartName)
+    print("playing "..chartName)
+    timer = 0
     energy = 50
     score = 0
     streak = 0
+    deathTimer = 0
+    timesPlayed = timesPlayed + 1
     activeChart = recursiveClone(charts[chartName])
     CurrentSong = activeChart.audio
     songSource = love.audio.newQueueableSource(
-        CurrentSong:getSampleRate(), 
+        CurrentSong:getSampleRate(),
         CurrentSong:getBitDepth(),
         CurrentSong:getChannelCount()
     )
     songSource:setPitch(opt.pitch)
-    buffer = love.sound.newSoundData(bufferSize, 
-        CurrentSong:getSampleRate(), 
+    buffer = love.sound.newSoundData(bufferSize,
+        CurrentSong:getSampleRate(),
         CurrentSong:getBitDepth(),
         CurrentSong:getChannelCount()
     )
@@ -500,6 +518,9 @@ local function play(chartName)
     metaTexts.song:SetText(activeChart.meta.artist .. " - " .. activeChart.meta.track)
     metaTexts.charter:SetPos(({love.graphics.getDimensions()})[1], 60)
     metaTexts.charter:SetText(activeChart.meta.charter)
+
+    songSource:play()
+    print("isPlaying:", songSource:isPlaying())
 
     for key, value in pairs(callbacks) do
         love[key] = value
@@ -523,6 +544,7 @@ assets.sounds = {
 assets.shaders = {
     recolor = love.graphics.newShader(love.filesystem.read("assets/shaders/recolor.lvsl"))
 }
+
 love.audio.setVolume(0.2)
 
 love.window.setMode(800, 600, {vsync = opt.vsync, resizable = not opt.fullscreen, fullscreen = opt.fullscreen})

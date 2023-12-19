@@ -6,7 +6,7 @@ return {
     pitch = 1, --Speed and pitch of the song
     auto = false, --Auto play
     vsync = true,
-    fullscreen = true,
+    fullscreen = false,
     bufferSize = 256, --Number of samples to read into the audio queue at a time. Increase this to fix audio stuttering, decrease to fix video stuttering
     chartName = "heracles" --Name of the chart to load
 }

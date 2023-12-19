@@ -19,7 +19,7 @@
    xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview
      id="namedview7"
-     pagecolor="#7f4080"
+     pagecolor="#808080"
      bordercolor="#000000"
      borderopacity="0.25"
      inkscape:showpageshadow="2"
@@ -29,9 +29,9 @@
      inkscape:document-units="mm"
      showgrid="false"
      showguides="true"
-     inkscape:zoom="1.4770342"
-     inkscape:cx="151.31674"
-     inkscape:cy="118.48067"
+     inkscape:zoom="2.0888418"
+     inkscape:cx="87.368991"
+     inkscape:cy="153.67368"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -45,11 +45,29 @@
   </sodipodi:namedview>
   <defs
      id="defs2">
+    <rect
+       x="16"
+       y="64"
+       width="88"
+       height="120"
+       id="rect4633" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1018">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop1014" />
+      <stop
+         style="stop-color:#00d4ff;stop-opacity:0;"
+         offset="1"
+         id="stop1016" />
+    </linearGradient>
     <linearGradient
        inkscape:collect="always"
        id="linearGradient1637">
       <stop
-         style="stop-color:#00d4ff;stop-opacity:0.5;"
+         style="stop-color:#00d4ff;stop-opacity:0.1;"
          offset="0"
          id="stop1633" />
       <stop
@@ -91,20 +109,20 @@
        inkscape:collect="always"
        xlink:href="#linearGradient1550"
        id="linearGradient1552"
-       x1="3.5718333"
-       y1="19.05"
+       x1="-8.4666662"
+       y1="19.049999"
        x2="28.178166"
        y2="19.05"
        gradientUnits="userSpaceOnUse"
        gradientTransform="rotate(180,15.875,19.05)" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient1550"
+       xlink:href="#linearGradient1018"
        id="linearGradient1587"
        gradientUnits="userSpaceOnUse"
        gradientTransform="rotate(180,15.875001,33.866666)"
-       x1="3.5718333"
-       y1="19.05"
+       x1="-8.4666643"
+       y1="19.049999"
        x2="28.178166"
        y2="19.05" />
     <filter
@@ -113,7 +131,7 @@
        id="filter1592"
        x="-0.37728562"
        y="-0.1886428"
-       width="1.7545675"
+       width="1.7545712"
        height="1.3772856">
       <feGaussianBlur
          inkscape:collect="always"
@@ -142,19 +160,15 @@
        x2="42.333332"
        y2="33.866669"
        gradientUnits="userSpaceOnUse"
-       spreadMethod="pad" />
+       spreadMethod="pad"
+       gradientTransform="translate(12.7)" />
   </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <path
-       id="path3274"
-       style="opacity:0.5;fill:url(#linearGradient1639);fill-opacity:1;stroke:none;stroke-width:2.70425;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-       d="M 4.2333336,18.3885 V 49.344833 H 27.516667 L 42.333333,33.866667 27.516667,18.3885 Z"
-       sodipodi:nodetypes="cccccc" />
     <rect
-       style="fill:none;fill-opacity:0;stroke:#ffffff;stroke-width:5.29167;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#192a32;fill-opacity:1;stroke:#ffffff;stroke-width:5.29167;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;fill-rule:nonzero"
        id="rect2690"
        width="59.266666"
        height="59.266666"
@@ -163,21 +177,28 @@
        rx="10"
        ry="10" />
     <path
+       id="path3274"
+       style="opacity:0.5;fill:url(#linearGradient1639);fill-opacity:1;stroke:none;stroke-width:2.70425;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 27.516667,19.05 12.7,48.683333 H 40.216667 L 55.033333,33.866667 40.216667,19.05 Z"
+       sodipodi:nodetypes="cccccc" />
+    <path
        style="fill:#00d4ff;fill-opacity:1;stroke:url(#linearGradient1552);stroke-width:1.323;stroke-linecap:square;stroke-opacity:1"
-       d="M 4.2333336,19.05 H 27.516666"
-       id="path1521" />
+       d="m 27.516667,19.05 c 11.216142,0 -4.006527,0 12.7,0"
+       id="path1521"
+       sodipodi:nodetypes="cc" />
     <path
        style="fill:#00d4ff;fill-opacity:1;stroke:url(#linearGradient1587);stroke-width:1.323;stroke-linecap:square;stroke-opacity:1"
-       d="M 4.2333336,48.683333 H 27.516666"
-       id="path1521-0" />
+       d="M 12.7,48.683333 H 40.216667"
+       id="path1521-0"
+       sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-opacity:1;stroke:#00d4ff;stroke-width:5.29167;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-       d="M 27.516667,19.05 42.333333,33.866667 27.516667,48.683333"
+       d="M 40.216667,19.05 55.033333,33.866667 40.216667,48.683333"
        id="path2546"
        sodipodi:nodetypes="ccc" />
     <path
        style="mix-blend-mode:normal;fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:2.64583;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter1592)"
-       d="M 27.516667,19.05 42.333333,33.866667 27.516667,48.683333"
+       d="M 40.216667,19.05 55.033333,33.866667 40.216667,48.683333"
        id="path1590"
        sodipodi:nodetypes="ccc" />
     <rect
@@ -185,9 +206,24 @@
        id="rect1596"
        width="59.266666"
        height="59.266666"
-       x="4.2333331"
+       x="4.2333336"
        y="4.2333331"
        rx="10"
        ry="10" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#00d4ff;stroke-width:5.29167;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 27.516667,19.05 12.7,48.683333"
+       id="path3851"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="mix-blend-mode:normal;fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:2.64583;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter1592)"
+       d="M 27.516667,19.05 12.7,48.683333"
+       id="path3435"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text4631"
+       style="font-size:32px;font-family:'Cascadia Code';-inkscape-font-specification:'Cascadia Code';text-align:center;white-space:pre;shape-inside:url(#rect4633);display:inline;fill:#72bde4;stroke:#e5d68a;stroke-width:5.00032;stroke-linecap:square" />
   </g>
 </svg>
