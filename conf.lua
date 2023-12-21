@@ -1,3 +1,8 @@
 function love.conf(t)
-    t.console = false
+    local opt = require("options")
+    
+    t.console = true
+    t.window.resizable = true
+    t.window.fullscreen = opt.fullscreen
+    t.window.vsync = opt.vsync
 end
