@@ -1,6 +1,3 @@
-# Moving to Godot
-I have realized that Love2D might not be the best framework to use for this project. Therefore, I am switching to Godot for further development at https://github.com/Ovionyx/SlashRhythm
-
 ## Install
     1. download or clone this repository
     2. download and install love2d (https://love2d.org)
