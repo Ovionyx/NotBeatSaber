@@ -1,58 +1,67 @@
 --    _        __
--- / /_)/_/ |/ / /_/ /|// \
---/ / \/ /  / / / / / */  /
+-- / /_)/_/ |/ / /_/ /|//
+--/ / \/ /  / / / / / */ 
 
-local gameplay = require("gameplay")
+local util = require("util")
 local vec2 = require("lib.vector2")
 require("objects")
 local opt = require("options")
 local charts = require("chartloader")
+local vars = require("vars")
 
 local lastMousePos = vec2(love.mouse.getPosition())
 MouseVel = vec2(0, 0)
 
+local call = function (func, ...)
+    if func then
+        func(...)
+    end
+end
+
+love.mouse.setRelativeMode(true)
 
 local callbacks = {
     update = function(dt)
-        -- your code
-
-        local mousePos = vec2(love.mouse.getPosition())
-        MouseVel = (mousePos - lastMousePos) / dt
-        lastMousePos = mousePos
+        --vars.mousePos = vec2(love.mouse.getPosition())
+        vars.mouseVel = (vars.mousePos - lastMousePos) / dt
+        lastMousePos = vars.mousePos
+        call(vars.state.update, dt)
     end,
 
     draw = function()
-        -- your code
+        call(vars.state.draw)
+        love.graphics.circle("fill", vars.mousePos.x, vars.mousePos.y, 5)
+    end,
+
+    mousemoved = function(x, y, dx, dy, istouch)
+        local w, h = love.graphics.getDimensions()
+        vars.mousePos = vars.mousePos + vec2(dx, dy)
+        vars.mousePos.x = vars.mousePos.x % w
+        vars.mousePos.y = vars.mousePos.y % h
     end,
 
     mousepressed = function(x, y, button)
-        -- your code
-
+        call(vars.state.mousepressed, x, y, button)
     end,
 
     mousereleased = function(x, y, button)
-        -- your code
-
+        call(vars.state.mousereleased, x, y, button)
     end,
 
     keypressed = function(key, scancode, isrepeat)
-        -- your code
-
-        print(key, scancode)
-
+        call(vars.state.keypressed, key, scancode, isrepeat)
     end,
 
     keyreleased = function(key)
-        -- your code
-
+        call(vars.state.keyreleased, key)
     end,
 
     textinput = function(text)
-        -- your code
-
+        call(vars.state.textinput, text)
     end,
 
-    wheelmoved = function (x, y)
+    wheelmoved = function(x, y)
+        call(vars.state.wheelmoved, x, y)
     end
 }
 
@@ -65,6 +74,6 @@ end
 
 chartSelect()
 
-gameplay.play(charts[opt.chartName])
+util.loadState("chartselect")
 
 --gameplay.play(require("options").chartName)

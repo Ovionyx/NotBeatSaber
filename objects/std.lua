@@ -83,7 +83,7 @@ return {
         end
 
         if vars.mousePos and dt > (first and -0.2 or 0) and vars.gameplay.energy > 0 then
-
+            print(vars.mousePos, vars.mouseVel)
             local unit = util.getUnit()
 
             local rot = self.rot
@@ -91,7 +91,7 @@ return {
                 self.x + self.ox * math.cos(rot) - self.oy * math.sin(rot),
                 self.y + self.ox * math.sin(rot) + self.oy * math.cos(rot)
             )
-            local dif = vars.mouseVel - pos
+            local dif = vars.mousePos - pos
             if (dif):lengthSquared() + dif:dot(self.dir) ^ 2 < unit ^ 2 or opt.auto and dt > 0 then
                 local foreVec = vec2(math.cos(rot), math.sin(rot))
                 local normVel = vars.mouseVel:normalize()

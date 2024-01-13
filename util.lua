@@ -1,4 +1,5 @@
 local vec2 = require("lib.vector2")
+local vars = require("vars")
 
 local function serializeTable(t, indent)
     indent = indent or 1
@@ -73,11 +74,20 @@ local function toScreenCoords(x, y)
     return vec2(love.graphics.getDimensions()) / 2 + vec2(x - 5, y - 5) * getUnit()
 end
 
+local function loadState(state)
+    if type(state) == "string" then
+        state = require("states."..state)
+    end
+    vars.state = state
+    return state
+end
+
 return {
     bezier = bezier,
     hsv2rgb = hsv2rgb,
     getUnit = getUnit,
     toScreenCoords = toScreenCoords,
     printTable = logTable,
-    serializeTable = serializeTable
+    serializeTable = serializeTable,
+    loadState = loadState,
 }

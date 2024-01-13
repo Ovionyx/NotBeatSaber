@@ -2,17 +2,17 @@ local objectMeta = require("objects")
 
 local charts = {}
 
-local function loadChart(dir)
-    local chart = {}
-    local path = "charts/" .. dir .. "/"
-    for i, item in ipairs(love.filesystem.getDirectoryItems("charts/" .. dir)) do
+local function chart_load(self)
+    if self.loaded then return end
+    local path = "charts/" .. self.directory .. "/"
+    for i, item in ipairs(love.filesystem.getDirectoryItems("charts/" .. self.directory)) do
         print(item)
         if item:sub(1, 5) == "audio" then
-            chart.audio = love.sound.newSoundData(path .. item)
+            self.audio = love.sound.newSoundData(path .. item)
         end
     end
     local file = love.filesystem.newFile(path .. "chart.ch", "r")
-    chart.objects = {}
+    self.objects = {}
     local timeAcc = 0
     for line in file:lines() do
         local values = {}
@@ -20,10 +20,10 @@ local function loadChart(dir)
             table.insert(values, match)
         end
 
-        if not chart.bpm then
-            chart.bpm = tonumber(values[1])
-            chart.offset = tonumber(values[2])
-            chart.bt = 60 / chart.bpm
+        if not self.bpm then
+            self.bpm = tonumber(values[1])
+            self.offset = tonumber(values[2])
+            self.bt = 60 / self.bpm
         elseif #values > 1 then
             local object = objectMeta[values[2]].constructor(unpack(values))
             local delay = values[1]
@@ -39,12 +39,21 @@ local function loadChart(dir)
             object.type = values[2]
             object.render = objectMeta[values[2]].render
             object.update = objectMeta[values[2]].update
-            table.insert(chart.objects, object)
+            table.insert(self.objects, object)
         end
     end
 
-    chart.duration = timeAcc * chart.bt
+    self.duration = timeAcc * self.bt
+    self.loaded = true
+    
+end
+
+local function loadChart(dir)
+    local chart = {}
     chart.meta = require("charts." .. dir .. ".meta")
+    chart.directory = dir
+    chart.load = chart_load
+    chart.loaded = false
 
     return chart
     
