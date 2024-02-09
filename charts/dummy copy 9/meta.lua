@@ -1,5 +1,5 @@
 return {
-    artist = "nobody",
-    track = "nothing",
-    charter = "no one"
+	artist = "nobody",
+	track = "nothing",
+	charter = "no one"
 }

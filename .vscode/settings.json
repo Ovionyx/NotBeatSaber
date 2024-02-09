@@ -1,5 +1,5 @@
 {
-    "Lua.workspace.library": [
-        "C:/Users/bluem/.vscode/extensions/sumneko.lua-3.7.3-win32-x64/server/meta/3rd/love2d/library"
-    ], 
+	"Lua.workspace.library": [
+		"C:/Users/bluem/.vscode/extensions/sumneko.lua-3.7.3-win32-x64/server/meta/3rd/love2d/library"
+	], 
 }

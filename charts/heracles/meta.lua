@@ -1,5 +1,5 @@
 return {
-    artist = "Yooh",
-    track = "Heracles",
-    charter = "Eeveeisepic"
+	artist = "Yooh",
+	track = "Heracles",
+	charter = "Eeveeisepic"
 }
