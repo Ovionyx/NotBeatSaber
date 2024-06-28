@@ -1,4 +1,4 @@
---	_		__
+--	  _		     __
 -- / /_)/_/ |/ / /_/ /|//
 --/ / \/ /  / / / / / */ 
 
@@ -35,9 +35,22 @@ local callbacks = {
 
 	mousemoved = function(x, y, dx, dy, istouch)
 		local w, h = love.graphics.getDimensions()
-		vars.mousePos = vars.mousePos + vec2(dx, dy)
-		vars.mousePos.x = vars.mousePos.x % w
-		vars.mousePos.y = vars.mousePos.y % h
+		if love.mouse.getRelativeMode() then
+			vars.mousePos = vars.mousePos + vec2(dx, dy)
+			if vars.mousePos.x <= 0 or vars.mousePos.x >= w or
+				vars.mousePos.y <= 0 or vars.mousePos.y >= h then
+				love.mouse.setRelativeMode(false)
+				love.mouse.setPosition(vars.mousePos.x, vars.mousePos.y)
+			end
+		else
+			x = x + dx
+			y = y + dy
+			if x > 0 and x < w and
+				y > 0 and y < h then
+				vars.mousePos = vec2(x, y)
+				love.mouse.setRelativeMode(true)
+			end
+		end
 	end,
 
 	mousepressed = function(x, y, button)

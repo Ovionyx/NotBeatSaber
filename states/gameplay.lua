@@ -83,7 +83,6 @@ local lastMousePos = vec2(love.mouse.getPosition())
 
 local callbacks = {
 	update = function(dt)
-		print(samplesRead)
 		while songSource:getFreeBufferCount() > 0 do
 			for i = 0, bufferSize - 1 do
 				for c = 1, CurrentSong:getChannelCount() do
@@ -250,13 +249,11 @@ local function play(chart)
 	local activeChart = recursiveClone(chart)
 	vars.gameplay.activeChart = activeChart
 	CurrentSong = activeChart.audio
-	print(songSource)
 	songSource = love.audio.newQueueableSource(
 		CurrentSong:getSampleRate(),
 		CurrentSong:getBitDepth(),
 		CurrentSong:getChannelCount()
 	)
-	print(songSource)
 	--songSource:setPitch(opt.pitch)
 	buffer = love.sound.newSoundData(bufferSize,
 		CurrentSong:getSampleRate(),

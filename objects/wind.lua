@@ -43,8 +43,6 @@ return {
 		local mp = vars.mousePos
 		vars.mousePos = vec2(mp.x + windx * dt, mp.y + windy * dt)
 
-		print(vars.mousePos)
-
 		local i = 1
 		while i <= #particles do
 			local p = particles[i]
@@ -76,6 +74,5 @@ return {
 		for _, p in ipairs(particles) do
 			love.graphics.line(p.pos.x, p.pos.y, p.pos.x + p.vel.x, p.pos.y + p.vel.y)
 		end
-		love.graphics.print(windy)
 	end
 }

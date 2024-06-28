@@ -44,7 +44,7 @@ return {
 		local pos = vec2(self.x - 5, self.y - 5) * unit
 
 		local objPos = vec2(love.graphics.getDimensions()) / 2 +
-			pos * (invDtExp * opt.indDur) +
+			pos * (invDtExp) +
 			vec2((self.ox * math.cos(rot) - self.oy * math.sin(rot)) * unit,
 				(self.ox * math.sin(rot) + self.oy * math.cos(rot)) * unit)
 
@@ -83,7 +83,6 @@ return {
 		end
 
 		if vars.mousePos and dt > (first and -0.2 or 0) and vars.gameplay.energy > 0 then
-			print(vars.mousePos, vars.mouseVel)
 			local unit = util.getUnit()
 
 			local rot = self.rot

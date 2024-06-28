@@ -60,8 +60,9 @@ local function loadChart(dir)
 end
 
 for i, dir in ipairs(love.filesystem.getDirectoryItems("charts")) do
-	print(dir)
 	charts[dir] = loadChart(dir)
 end
+
+
 
 return charts
