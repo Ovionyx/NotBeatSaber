@@ -37,6 +37,10 @@ return {
 	end,
 
 	staticUpdate = function (dt, time)
+		if windx == 0 and windy == 0 then
+			particles = {}
+			return
+		end
 		local w, h = love.graphics.getDimensions()
 		windx = math.lerp(windx, targx, 0.02)
 		windy = math.lerp(windy, targy, 0.02)

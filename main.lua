@@ -25,23 +25,30 @@ local callbacks = {
 		--vars.mousePos = vec2(love.mouse.getPosition())
 		vars.mouseVel = (vars.mousePos - lastMousePos) / dt
 		lastMousePos = vars.mousePos
+		local time = os.clock()
 		call(vars.state.update, dt)
+		-- print("update: ", (os.clock() - time) * 1000)
 	end,
 
 	draw = function()
+		local time = os.clock()
 		call(vars.state.draw)
+		-- print("draw:   ", (os.clock() - time) * 1000)
 		love.graphics.circle("fill", vars.mousePos.x, vars.mousePos.y, 5)
 	end,
 
 	mousemoved = function(x, y, dx, dy, istouch)
+		if not love.window.hasFocus() then return end
 		local w, h = love.graphics.getDimensions()
 		if love.mouse.getRelativeMode() then
 			vars.mousePos = vars.mousePos + vec2(dx, dy)
-			if vars.mousePos.x <= 0 or vars.mousePos.x >= w or
+			vars.mousePos.x = math.max(math.min(vars.mousePos.x, w), 0)
+			vars.mousePos.y = math.max(math.min(vars.mousePos.y, h), 0)
+			--[[ if vars.mousePos.x <= 0 or vars.mousePos.x >= w or
 				vars.mousePos.y <= 0 or vars.mousePos.y >= h then
 				love.mouse.setRelativeMode(false)
 				love.mouse.setPosition(vars.mousePos.x, vars.mousePos.y)
-			end
+			end --]]
 		else
 			x = x + dx
 			y = y + dy

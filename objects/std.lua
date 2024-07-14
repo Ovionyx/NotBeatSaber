@@ -4,6 +4,8 @@ local util = require("util")
 local opt = require("options")
 local assets = require("assets")
 
+local scoreTextFont = love.graphics.newFont("assets/fonts/regular.otf", 20)
+
 return {
 	constructor = function(_, _, x, y, rot, ox, oy)
 		rot = math.rad(tonumber(rot))
@@ -101,6 +103,7 @@ return {
 					vars.gameplay.energy = math.min(vars.gameplay.energy + 1, 100)
 					local noteScore =
 						math.floor((dot - 0.8) * 5 * (1 - 1 / (vars.mouseVel:length() + 1)) * 20 + 0.5) * 10
+					table.insert(scoreTexts, {x = self.x, y = self.y, text = love.graphics.newText(scoreTextFont, tostring(noteScore)), vel = vars.mouseVel, rot = self.rot, age = 0})
 					vars.gameplay.score = vars.gameplay.score + noteScore
 					vars.gameplay.streak = vars.gameplay.streak + 1
 					vars.gameplay.noteCount = vars.gameplay.noteCount + 1

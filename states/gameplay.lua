@@ -25,21 +25,32 @@ bufferSize = opt.bufferSize
 
 local lastHitNote
 
-local scoreTexts = {}
+local particles = {
+	pos = vec2(0, 0),
+	vel = vec2(0, 0),
+	lifetime = 1,
+	rot = 0,
+	rotvel = 0,
+	scale = 1,
+	scalevel = 0,
+	update = nil, --func
+	render = nil, --func
+}
+
+scoreTexts = {}
 local center = vec2(love.graphics.getDimensions()) / 2
 
---[[
 local metaTexts = {
-	song = loveframes.Create("text"),
-	charter = loveframes.Create("text")
+	song = {},
+	charter = {},
 }
-metaTexts.song:SetText("")
-metaTexts.song:SetFont(love.graphics.newFont("assets/fonts/bold.otf", 50))
-metaTexts.song:SetDefaultColor(1, 1, 1)
-metaTexts.charter:SetText("")
-metaTexts.charter:SetFont(love.graphics.newFont("assets/fonts/bold.otf", 30))
-metaTexts.charter:SetDefaultColor(1, 1, 1)
-]]
+metaTexts.song.font = love.graphics.newFont("assets/fonts/bold.otf", 50)
+metaTexts.charter.font = love.graphics.newFont("assets/fonts/bold.otf", 30)
+
+local fonts = {
+	stats = love.graphics.newFont("assets/fonts/regular.otf", 15),
+	combo = love.graphics.newFont("assets/fonts/regular.otf", 25)
+}
 
 local playbackSpeed = 1
 local lastPlaybackSpeed = 1
@@ -72,17 +83,35 @@ end
 
 
 local function noteArc(startNote, endNote, t)
+	local dt = endNote.time - startNote.time
 	local startVec = startNote.pos
-	local startDir = startNote.dir * 3
+	local startDir = startNote.dir * 4 * dt
 	local endVec = endNote.pos
-	local endDir = endNote.dir * 3
+	local endDir = endNote.dir * 4 * dt
 	return util.bezier(startVec, startVec+startDir, endVec-endDir, endVec, t)
 end
 
 local lastMousePos = vec2(love.mouse.getPosition())
 
+local timerPeaks = {}
+local timerStarts = {}
+
+local function startTimer(timer)
+	timerStarts[timer] = os.clock()
+end
+
+local function endTimer(timer)
+	local time = (os.clock() - timerStarts[timer]) * 1000
+	local peak = timerPeaks[timer]
+	if not peak or peak < time then
+		print("Timer '" .. timer .. "' took " .. tostring(time) .. " ms")
+		timerPeaks[timer] = time
+	end
+end
+
 local callbacks = {
 	update = function(dt)
+		startTimer("loadSamples")
 		while songSource:getFreeBufferCount() > 0 do
 			for i = 0, bufferSize - 1 do
 				for c = 1, CurrentSong:getChannelCount() do
@@ -97,7 +126,7 @@ local callbacks = {
 			songSource:queue(buffer)
 			songSource:play()
 		end
-
+		endTimer("loadSamples")
 
 		if vars.gameplay.energy == 0 then
 			playbackSpeed = math.max(0, playbackSpeed - dt*0.2)
@@ -157,42 +186,49 @@ local callbacks = {
 
 		timer = timer + dt
 
-		--[[
 		if timer < 5 then
-			metaTexts.song:SetPos(
-				math.lerp(metaTexts.song:GetX(), love.graphics.getDimensions() - metaTexts.song:GetWidth(), 0.02), 0)
-			metaTexts.charter:SetPos(
-				math.lerp(metaTexts.charter:GetX(), love.graphics.getDimensions() - metaTexts.charter:GetWidth(), 0.02),
-				60)
+			metaTexts.song.pos[1] =
+				math.lerp(metaTexts.song.pos[1], love.graphics.getDimensions() - metaTexts.song.text:getWidth(), 0.02)
+			metaTexts.charter.pos[1] =
+				math.lerp(metaTexts.charter.pos[1], love.graphics.getDimensions() - metaTexts.charter.text:getWidth(), 0.02)
 		else
-			metaTexts.song:SetPos(
-				math.lerp(metaTexts.song:GetX(), love.graphics.getDimensions(), 0.02), 0)
-			metaTexts.charter:SetPos(
-				math.lerp(metaTexts.charter:GetX(), love.graphics.getDimensions(), 0.02), 60)
-		end]]
+			metaTexts.song.pos[1] =
+				math.lerp(metaTexts.song.pos[1], love.graphics.getDimensions(), 0.02)
+			metaTexts.charter.pos[1] =
+				math.lerp(metaTexts.charter.pos[1], love.graphics.getDimensions(), 0.02)
+		end
 		
 	end,
 
 	draw = function()
+		startTimer "draw"
+		startTimer "mouseTrail"
 		if #mouseTrail < 3 then return end
 		local coords = {}
 		for i, point in ipairs(mouseTrail) do
 			coords[i * 2 - 1] = point.x
 			coords[i * 2] = point.y
 		end
+		endTimer "mouseTrail"
 
 		local activeChart = vars.gameplay.activeChart
 
 		local time = samplesRead / CurrentSong:getSampleRate()
+
+		startTimer "renderObjects"
 		for i = math.min(#activeChart.objects, 150), 1, -1 do
 			activeChart.objects[i]:render(time)
 		end
+		endTimer "renderObjects"
 
+		startTimer "scoreTexts"
 		for index, text in ipairs(scoreTexts) do
 			love.graphics.setColor(255, 255, 255, 1 - text.age)
-			local pos = util.toScreenCoords(text.x, text.y)
-			love.graphics.print(tostring(text.score), pos.x, pos.y)
+			local pos = util.toScreenCoords(text.x, text.y) + text.vel * (1 - (1 - text.age) ^ opt.indExp) / 20
+			local rot = text.rot * (1 - text.age ^ opt.indExp)
+			love.graphics.draw(text.text, pos.x, pos.y, rot, 1, 1, text.text:getWidth()/2, text.text:getHeight()/2)
 		end
+		endTimer "scoreTexts"
 
 		love.graphics.setShader()
 
@@ -202,11 +238,15 @@ local callbacks = {
 
 		love.graphics.polygon("fill", coords)
 
+		startTimer "staticRenders"
 		for index, value in pairs(objects) do
 			if value.staticRender then
+				startTimer("staticRenders."..index)
 				value.staticRender(time)
+				endTimer("staticRenders."..index)
 			end
 		end
+		endTimer "staticRenders"
 
 		if opt.auto and lastHitNote and activeChart.objects[1] then
 			local bezPoint = noteArc(lastHitNote, activeChart.objects[1],
@@ -218,10 +258,16 @@ local callbacks = {
 
 		love.graphics.rectangle("line", 10, 10, 200, 10)
 		love.graphics.rectangle("fill", 10, 10, vars.gameplay.energy * 2, 10)
+		love.graphics.setFont(fonts.stats)
 		love.graphics.print(tostring(vars.gameplay.score), 10, 30)
 		love.graphics.print(tostring(math.floor(vars.gameplay.score / 2 / math.max(vars.gameplay.noteCount, 1))) .. "%",
 			180, 30)
-		love.graphics.print(tostring(vars.gameplay.streak), 10, 45, 0, 2, 2)
+		love.graphics.setFont(fonts.combo)
+		love.graphics.print(tostring(vars.gameplay.streak), 10, 45)
+
+		love.graphics.draw(metaTexts.song.text, unpack(metaTexts.song.pos))
+		love.graphics.draw(metaTexts.charter.text, unpack(metaTexts.charter.pos))
+		endTimer "draw"
 
 	end,
 
@@ -268,14 +314,15 @@ local function play(chart)
 		end
 	end
 	activeChart.objects = new
-	--[[
-	metaTexts.song:SetX(({love.graphics.getDimensions()})[1])
-	metaTexts.song:SetText(activeChart.meta.artist .. " - " .. activeChart.meta.track)
-	metaTexts.charter:SetPos(({love.graphics.getDimensions()})[1], 60)
-	metaTexts.charter:SetText(activeChart.meta.charter)
-	]]
+	metaTexts.song.pos = {({love.graphics.getDimensions()})[1], 0}
+	metaTexts.song.text = love.graphics.newText(metaTexts.song.font, activeChart.meta.artist .. " - " .. activeChart.meta.track)
+	metaTexts.charter.pos = {({love.graphics.getDimensions()})[1], 60}
+	metaTexts.charter.text = love.graphics.newText(metaTexts.charter.font, activeChart.meta.charter)
 
 	songSource:play()
+
+	print(#objects)
+	
 end
 
 
