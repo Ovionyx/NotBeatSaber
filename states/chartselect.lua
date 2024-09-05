@@ -29,6 +29,8 @@ local timer = 0
 
 local colV = 1
 
+local triConst = math.sqrt(3)/2
+
 local function chartPanelPolygon(x, y)
 	local xOff = -y / slope
 	local nextXOff = -(y + panelHeight) / slope
@@ -44,6 +46,10 @@ local noteButtons = {
 }
 
 local difficultyNotes = {
+	
+}
+
+local triangles = {
 	
 }
 
@@ -155,7 +161,6 @@ local function playChartNote(self)
 end
 
 local function drawSelectedChart()
-	print(selectedChart.meta.difficulties)
 	local difficulties = selectedChart.meta.difficulties
 	local basex = 2 * width - shift * width - panelHeight * #difficulties - panelWidth / slope - panelHeight * 2
 	for i, v in ipairs(difficulties) do
@@ -186,6 +191,19 @@ local function drawSelectedChart()
 end
 
 local function draw()
+	for _, triangle in pairs(triangles) do
+		local tp = triangle.lifetime / triangle.lifespan
+		love.graphics.setColor(1, 1, 1, (-4*(tp-0.5)^2+1)/20)
+		local tx, ty = triangle.x, triangle.y
+		local ts, tf = triangle.size, triangle.flip
+		local x1 = tx
+		local y1 = ty + ts * tf
+		local x2 = tx - ts * triConst
+		local y2 = ty - ts * tf / 2
+		local x3 = tx + ts * triConst
+		local y3 = y2
+		love.graphics.polygon("fill", x1, y1, x2, y2, x3, y3)
+	end
 	noteButtons = {}
 	love.graphics.setFont(font)
 	width, height = love.graphics.getDimensions()
@@ -250,8 +268,10 @@ local function draw()
 	if shift > 0.01 and selectedChart then
 		drawSelectedChart()
   end
-	
+
 	drawNoteButtons()
+
+	love.graphics.setColor(1, 1, 1)
 end
 
 local function update(dt)
@@ -303,6 +323,27 @@ local function update(dt)
 		else
 			note.t = math.lerp(0, note.t, t)
 		end
+	end
+
+	for i = 1, 50 do
+		local triangle = triangles[i]
+		if not triangle or triangle.lifetime <= 0 then
+			local life = math.random() * 2 + 1
+			triangle = {
+				x = math.random() * width,
+				y = math.random() * height,
+				vx = math.random() * 4 - 2,
+				vy = math.random() * 4 - 2,
+				size = math.random() * 300 + 100,
+				lifespan = life,
+				lifetime = life,
+				flip = math.random(2) * 2 - 3
+			}
+			triangles[i] = triangle
+		end
+		triangle.x = triangle.x + triangle.vx * dt
+		triangle.y = triangle.y + triangle.vy * dt
+		triangle.lifetime = triangle.lifetime - dt
 	end
 end
 
